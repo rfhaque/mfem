@@ -772,6 +772,7 @@ inline real_t InnerProduct(const Vector &x, const Vector &y)
 */
 inline real_t InnerProduct(MPI_Comm comm, const Vector &x, const Vector &y)
 {
+   MPI_Barrier(comm);
    real_t loc_prod = x * y;
    real_t glb_prod;
    MPI_Allreduce(&loc_prod, &glb_prod, 1, MFEM_MPI_REAL_T, MPI_SUM, comm);
