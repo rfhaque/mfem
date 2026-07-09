@@ -28,6 +28,13 @@
 namespace mfem
 {
 
+#ifdef MFEM_USE_MPI
+real_t *inner_product_local_mpi_buffer =
+   static_cast<real_t*>(std::malloc(sizeof(real_t)));
+real_t *inner_product_global_mpi_buffer =
+   static_cast<real_t*>(std::malloc(sizeof(real_t)));
+#endif
+
 /**
  * Reducer for helping to compute L2-norms. Given two partial results:
  * a0 = sum_i (|v_i|/a1)^2

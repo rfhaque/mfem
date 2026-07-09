@@ -766,6 +766,9 @@ inline real_t InnerProduct(const Vector &x, const Vector &y)
 }
 
 #ifdef MFEM_USE_MPI
+extern MFEM_EXPORT real_t *inner_product_local_mpi_buffer;
+extern MFEM_EXPORT real_t *inner_product_global_mpi_buffer;
+
 /// Returns the inner product of x and y in parallel
 /** In parallel this computes the inner product of the global vectors,
     producing identical results on each MPI rank.
@@ -773,10 +776,10 @@ inline real_t InnerProduct(const Vector &x, const Vector &y)
 inline real_t InnerProduct(MPI_Comm comm, const Vector &x, const Vector &y)
 {
    MPI_Barrier(comm);
-   real_t loc_prod = x * y;
-   real_t glb_prod;
-   MPI_Allreduce(&loc_prod, &glb_prod, 1, MFEM_MPI_REAL_T, MPI_SUM, comm);
-   return glb_prod;
+   *inner_product_local_mpi_buffer = x * y;
+   MPI_Allreduce(inner_product_local_mpi_buffer, inner_product_global_mpi_buffer,
+                 1, MFEM_MPI_REAL_T, MPI_SUM, comm);
+   return *inner_product_global_mpi_buffer;
 }
 #endif
 
