@@ -772,7 +772,7 @@ inline real_t InnerProduct(const Vector &x, const Vector &y)
 */
 inline real_t InnerProduct(MPI_Comm comm, const Vector &x, const Vector &y)
 {
-   MPI_Barrier(comm);
+   //MPI_Barrier(comm);
    real_t loc_prod = x * y;
    real_t glb_prod;
    MPI_Request request;
