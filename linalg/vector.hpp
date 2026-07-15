@@ -774,7 +774,14 @@ inline real_t InnerProduct(MPI_Comm comm, const Vector &x, const Vector &y)
 {
    real_t loc_prod = x * y;
    real_t glb_prod;
-   MPI_Allreduce(&loc_prod, &glb_prod, 1, MFEM_MPI_REAL_T, MPI_SUM, comm);
+   MPI_Request request;
+   MPI_Iallreduce(&loc_prod, &glb_prod, 1, MFEM_MPI_REAL_T, MPI_SUM, comm,
+                  &request);
+   int flag = 0;
+   while (!flag)
+   {
+      MPI_Test(&request, &flag, MPI_STATUS_IGNORE);
+   }
    return glb_prod;
 }
 #endif
